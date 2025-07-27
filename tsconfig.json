@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+	"baseUrl": ".",
 	"target": "ES2020",
 	"module": "CommonJS",
 	"moduleResolution": "node",
@@ -7,7 +8,13 @@
 	"esModuleInterop": true,
 	"skipLibCheck": true,
 	"forceConsistentCasingInFileNames": true,
-	"outDir": "dist"
+	"outDir": "dist",
+	"paths": {
+		"@interfaces/*": ["interfaces/*"],
+		"@data/*": ["data/*"],
+		"@fixtures/*": ["fixtures/*"],
+		"@utils/*": ["utils/*"]
+	}
   },
   "include": ["tests", "playwright.config.ts"]
 }

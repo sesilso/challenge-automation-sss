@@ -1,7 +1,7 @@
-import { test } from '../../../fixtures/custom-fixture';
+import { test } from '@fixtures/custom-fixture';
 import { expect } from '@playwright/test';
-import { loadPokemonTestData } from '../../../data/pokemonTestDataLoader';
-import {pokemonTestData} from '../../../interfaces/pokemon';
+import { loadPokemonTestData } from '@data/pokemonTestDataLoader';
+import {pokemonTestData} from '@interfaces/pokemon';
 
 let testData: pokemonTestData[] = [];
 test.beforeAll(async() => {

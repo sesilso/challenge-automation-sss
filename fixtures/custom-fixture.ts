@@ -1,5 +1,5 @@
 import { test as baseTest } from '@playwright/test';
-import { getHashedKey } from '../security/encrypt';
+import { getHashedKey } from '../utils/encrypt';
 import { getUTCDateTime } from '../utils/datetime';
 
 type MyFixtures = {

@@ -8,9 +8,11 @@ test.beforeEach(() => {
 })
 
 test('Should return correct id, name, and abilities in the response', async ({request}) =>{
-    const response = await request.get('');  // Usará la baseURL de project: API - Pokeapi
+    const pokeName = 'pikachu';  
+    const response = await request.get(`${pokeName}`);
     console.log(`URL Pokeapi usada: ${response.url()}`);
     expect(response.status()).toBe(200);
+
     testData.forEach(x => console.log(x));
 })
 

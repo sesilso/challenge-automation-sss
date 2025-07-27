@@ -6,7 +6,3 @@ test('Test 1 - jsonplaceholder', async ({request}) =>{
     console.log(`URL PLaceholder usada: ${response.url()}`);
     expect(response.status()).toBe(200);
 })
-
-test('Ver baseURL', async ({ baseURL }) => {
-  console.log('baseURL actual:', baseURL);
-});

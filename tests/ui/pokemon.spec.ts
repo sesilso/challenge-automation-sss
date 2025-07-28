@@ -4,27 +4,19 @@ import {PokemonPage} from '@pages/PokemonPage';
 import { loadPokemonTestData } from '@data/pokemonTestDataLoader';
 import { pokemonTestData} from '@interfaces/pokemon';
 
-let testData: pokemonTestData[] = [];
-test.beforeAll(async() => {
-  testData = await loadPokemonTestData();
-})
-test('TEST WEB 1: ', async ({ page }) => {
-  const pokemonPage = new PokemonPage(page);  
+test.describe('Pokemon Tests', () => {
+  const testData: pokemonTestData[] = loadPokemonTestData();
   for(let testPokemon of testData){
-    await pokemonPage.navigate(testPokemon.name);
-    await pokemonPage.assertPageTitle(testPokemon.name);
-    await pokemonPage.logArtworkAuthor();
-    await pokemonPage.assertPokemonImgIsVisible(testPokemon.name);
-    await page.waitForTimeout(2000);
+    test(`Should display correct pokemon content for ${testPokemon.name} `, async ({ page }) => {
+        const pokemonPage = new PokemonPage(page); 
+        await pokemonPage.navigate(testPokemon.name);
+        await pokemonPage.assertPageTitle(testPokemon.name);
+        await pokemonPage.logArtworkAuthor();
+        const pokemonImage = await pokemonPage.downloadImageAndGetPath();
+        await pokemonPage.assertFileExtention(pokemonImage);
+        await pokemonPage.assertFileSize(pokemonImage);
+    });
   }
-  
-  // expect(await pokemonPage.getContentTitle()).toBe('Pikachu');
- 
+})
 
-});
 
-// test('TEST WEB 2:', async ({ page }) => {
-//   await page.goto('');
-//   await expect(page).toHaveTitle('Pikachu - Wikipedia');
-
-// });

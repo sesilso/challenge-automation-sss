@@ -1,17 +1,20 @@
-import {Page, expect, Locator} from '@playwright/test';
+import {Page, expect, Locator, APIResponse} from '@playwright/test';
 import {capitalizedFirtLetter} from '@utils/strings';
+import {prepareFolderDirectory} from '@utils/folders';
+import path from 'path';
+import fs from 'fs';
 
 export class PokemonPage{
     private page: Page;
     private contentTitle: Locator;
     private artworkAuthor: Locator;
-    private pokemonImg: string;
+    private pokemonImg: Locator;
 
     constructor(page: Page){
         this.page = page;
         this.contentTitle = this.page.locator('.mw-page-title-main');
         this.artworkAuthor = this.page.locator('.infobox-caption');
-        this.pokemonImg = 'img.mw-file-element[src*="pokename_art.png"]';
+        this.pokemonImg = this.page.locator('td.infobox-image img.mw-file-element');
     }
 
     async navigate(path: string): Promise<void>{
@@ -38,10 +41,50 @@ export class PokemonPage{
         console.log(author.trim());
     }
 
-    async assertPokemonImgIsVisible(name: string):Promise<void>{
-        const imgLocator = this.page.locator(this.pokemonImg.replace('pokename',capitalizedFirtLetter(name)))
-        await expect(imgLocator).toBeVisible();
-        await imgLocator.screenshot({path: `images/${name}.png`});
+    
+    async assertFileExtention(filePath: string): Promise<void>{
+        const validExtentions = ['.jpe', '.jpeg', '.png', '.svg'];
+        const fileExtention = path.extname(filePath).toLowerCase();
+        expect(validExtentions).toContain(fileExtention);
+    }
+
+    async assertFileSize(filePath: string): Promise<void>{
+        const fileStats = await fs.promises.stat(filePath);
+        const fileSize = fileStats.size;
+        expect(fileSize).toBeLessThan(50000);
+    }
+
+    async downloadImageAndGetPath():Promise<string>{
+        await expect(this.pokemonImg).toBeVisible();
+        const outputFolder = 'images';
+        await prepareFolderDirectory(outputFolder);
+        const {imgUrl, fileName} = await this.getImageElementData(this.pokemonImg);
+        const buffer = await this.getImageBuffer(imgUrl);
+        const folderPath = path.resolve(process.cwd(), outputFolder);
+        const imgPath = path.join(folderPath, fileName);
+        fs.writeFileSync(imgPath, buffer);
+        return imgPath;
+    }
+
+    async getImageElementData(imgLocator: Locator): Promise<{imgUrl: string, fileName:string}>{
+        const src = await imgLocator.getAttribute('src');
+        if(!src){
+            throw new Error('No attribute src found for image');
+        }
+        const imgUrl = src.startsWith('//')? 'https:'+src: src;
+        const fileName = imgUrl.split('/').pop();
+        if(!fileName){
+            throw new Error('Could not define file name.');
+        }
+        return {imgUrl, fileName};
+    }
+
+    async getImageBuffer(imgUrl: string): Promise<Buffer>{
+        const response = await this.page.request.get(imgUrl);
+        if(!response.ok){
+            throw new Error('There was an error when trying to download to generate buffer: ' + imgUrl);
+        }
+        return await response.body();
     }
 
 }

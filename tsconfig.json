@@ -13,7 +13,8 @@
 		"@interfaces/*": ["interfaces/*"],
 		"@data/*": ["data/*"],
 		"@fixtures/*": ["fixtures/*"],
-		"@utils/*": ["utils/*"]
+		"@utils/*": ["utils/*"],
+		"@api/*": ["api/*"]
 	}
   },
   "include": ["tests", "playwright.config.ts"]

@@ -1,60 +1,57 @@
 import { test } from '@fixtures/custom-fixture';
-import { expect } from '@playwright/test';
+import { expect, APIResponse } from '@playwright/test';
 import { loadPokemonTestData } from '@data/pokemonTestDataLoader';
-import {pokemonTestData} from '@interfaces/pokemon';
+import { pokemonTestData, pokemonResponseData } from '@interfaces/pokemon';
+import {requestWithDuration} from '@api/requestHelper';
+import {getPokemonResponse} from '@api/pokeapiHelper';
+import {splitAndTrim} from '@utils/strings';
 
 let testData: pokemonTestData[] = [];
 test.beforeAll(async() => {
   testData = await loadPokemonTestData();
 })
 
+function expectPokemonResponseMatches(response: pokemonResponseData, expected: pokemonTestData){
+  expect(response).toHaveProperty('id');
+  expect(response).toHaveProperty('name');
+  expect(response).toHaveProperty('abilities');
+  expect(response.id).toBe(expected.id);
+  expect(response.name).toBe(expected.name);
+  splitAndTrim(expected.abilities, ',').forEach(expectedAbility => {
+    expect(response.abilities.map(x => x.ability.name)).toContain(expectedAbility);
+  })
+}
+
+function expectPokemonResponseDuration(response: APIResponse, duration: number){
+    expect(response.status()).toBe(200);
+    expect(duration).toBeLessThan(10_000);  
+}
+
 
 test('Should return correct id, name, and abilities in the response by ID', async ({request}) =>{    
-  for(let pokemon of testData){;
-    const response = await request.get(`${pokemon.id}`);
-    const pokemonResponse = await response.json();
-    const abilityArrayFromResponse = pokemonResponse.abilities.map( (a: { ability: { name: string } }) => a.ability.name);
-    const abilityArrayFromTestData = pokemon.abilities.split(',').map(name => name.trim());
-
-    expect(response.status()).toBe(200);
-    expect(pokemonResponse).toHaveProperty('id');
-    expect(pokemonResponse).toHaveProperty('name');
-    expect(pokemonResponse).toHaveProperty('abilities');
-
-    expect(pokemonResponse.id).toBe(pokemon.id);
-    expect(pokemonResponse.name).toBe(pokemon.name);
-    abilityArrayFromTestData.forEach(expectedAbility => {
-      expect(abilityArrayFromResponse).toContain(expectedAbility);
-    })
+  for(let testPokemon of testData){;
+    const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.id}`);
+    expectPokemonResponseMatches(pokemonResponse, testPokemon);
   } 
 })
 
-test('Should return correct id, name, and abilities in the response by Name', async ({request}) =>{    
-  for(let pokemon of testData){;
-    const response = await request.get(`${pokemon.name}`);
-    const pokemonResponse = await response.json();
-    const abilityArrayFromResponse = pokemonResponse.abilities.map( (a: { ability: { name: string } }) => a.ability.name);
-    const abilityArrayFromTestData = pokemon.abilities.split(',').map(name => name.trim());
-
-    expect(response.status()).toBe(200);
-    expect(pokemonResponse).toHaveProperty('id');
-    expect(pokemonResponse).toHaveProperty('name');
-    expect(pokemonResponse).toHaveProperty('abilities');
-
-    expect(pokemonResponse.id).toBe(pokemon.id);
-    expect(pokemonResponse.name).toBe(pokemon.name);
-    abilityArrayFromTestData.forEach(expectedAbility => {
-      expect(abilityArrayFromResponse).toContain(expectedAbility);
-    })
+test('Should return correct id, name, and abilities in the response by NAME', async ({request}) =>{    
+  for(let testPokemon of testData){;
+    const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.name}`);
+    expectPokemonResponseMatches(pokemonResponse, testPokemon);
   } 
 })
 
-test('Should in less than 10 seconds', async ({request}) =>{    
+test('Request by ID should responde in less than 10 seconds', async ({request}) =>{    
   for(let pokemon of testData){;
-    const start = Date.now();
-    const response = await request.get(`${pokemon.id}`);
-    const duration = Date.now() - start;
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(10_000);
+    const {response, duration } = await requestWithDuration(request, `${pokemon.id}`);
+    expectPokemonResponseDuration(response, duration);
+  } 
+})
+
+test('Request by NAME should responde in less than 10 seconds', async ({request}) =>{    
+  for(let pokemon of testData){;
+    const {response, duration } = await requestWithDuration(request, `${pokemon.name}`);
+    expectPokemonResponseDuration(response, duration);
   } 
 })

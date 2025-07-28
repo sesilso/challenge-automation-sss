@@ -29,28 +29,28 @@ function expectPokemonResponseDuration(response: APIResponse, duration: number){
 
 
 test('Should return correct id, name, and abilities in the response by ID', async ({request}) =>{    
-  for(let testPokemon of testData){;
+  for(let testPokemon of testData){
     const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.id}`);
     expectPokemonResponseMatches(pokemonResponse, testPokemon);
   } 
 })
 
 test('Should return correct id, name, and abilities in the response by NAME', async ({request}) =>{    
-  for(let testPokemon of testData){;
+  for(let testPokemon of testData){
     const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.name}`);
     expectPokemonResponseMatches(pokemonResponse, testPokemon);
   } 
 })
 
 test('Request by ID should responde in less than 10 seconds', async ({request}) =>{    
-  for(let pokemon of testData){;
+  for(let pokemon of testData){
     const {response, duration } = await requestWithDuration(request, `${pokemon.id}`);
     expectPokemonResponseDuration(response, duration);
   } 
 })
 
 test('Request by NAME should responde in less than 10 seconds', async ({request}) =>{    
-  for(let pokemon of testData){;
+  for(let pokemon of testData){
     const {response, duration } = await requestWithDuration(request, `${pokemon.name}`);
     expectPokemonResponseDuration(response, duration);
   } 

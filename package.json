@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:dev": "cross-env ENV=qa SECRET_KEY=1234 playwright test --project=\"API - Pokeapi\"",
+    "test:dev": "cross-env ENV=qa SECRET_KEY=1234 playwright test --project=\"API - JsonPlaceholder\"",
     "test:qa": "cross-env ENV=qa SECRET_KEY=1234 playwright test",
     "test:cert": "cross-env ENV=cert SECRET_KEY=9876 npx playwright test"
   },
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@playwright/test": "^1.54.1",
     "@types/node": "^24.1.0",
     "@types/xlsx": "^0.0.35",

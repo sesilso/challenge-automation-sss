@@ -6,11 +6,6 @@ import {requestWithDuration} from '@api/requestHelper';
 import {getPokemonResponse} from '@api/pokeapiHelper';
 import {splitAndTrim} from '@utils/strings';
 
-let testData: pokemonTestData[] = [];
-test.beforeAll(async() => {
-  testData = await loadPokemonTestData();
-})
-
 function expectPokemonResponseMatches(response: pokemonResponseData, expected: pokemonTestData){
   expect(response).toHaveProperty('id');
   expect(response).toHaveProperty('name');
@@ -27,31 +22,27 @@ function expectPokemonResponseDuration(response: APIResponse, duration: number){
     expect(duration).toBeLessThan(10_000);  
 }
 
-
-test('Should return correct id, name, and abilities in the response by ID', async ({request}) =>{    
+test.describe('Pokemon API Tests', () => {
+  const testData: pokemonTestData[] = loadPokemonTestData();
   for(let testPokemon of testData){
-    const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.id}`);
-    expectPokemonResponseMatches(pokemonResponse, testPokemon);
-  } 
-})
+    test(`Should return correct id, name, and abilities in the response by ID: ${testPokemon.id}`, async ({request}) =>{    
+        const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.id}`);
+        expectPokemonResponseMatches(pokemonResponse, testPokemon);
+    })
 
-test('Should return correct id, name, and abilities in the response by NAME', async ({request}) =>{    
-  for(let testPokemon of testData){
-    const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.name}`);
-    expectPokemonResponseMatches(pokemonResponse, testPokemon);
-  } 
-})
+    test(`Should return correct id, name, and abilities in the response by NAME: ${testPokemon.name}`, async ({request}) =>{    
+        const pokemonResponse: pokemonResponseData = await getPokemonResponse(request, `${testPokemon.name}`);
+        expectPokemonResponseMatches(pokemonResponse, testPokemon); 
+    })
 
-test('Request by ID should responde in less than 10 seconds', async ({request}) =>{    
-  for(let pokemon of testData){
-    const {response, duration } = await requestWithDuration(request, `${pokemon.id}`);
-    expectPokemonResponseDuration(response, duration);
-  } 
-})
+    test(`Request by ID: ${testPokemon.id} should responde in less than 10 seconds`, async ({request}) =>{    
+        const {response, duration } = await requestWithDuration(request, `${testPokemon.id}`);
+        expectPokemonResponseDuration(response, duration);
+    })
 
-test('Request by NAME should responde in less than 10 seconds', async ({request}) =>{    
-  for(let pokemon of testData){
-    const {response, duration } = await requestWithDuration(request, `${pokemon.name}`);
-    expectPokemonResponseDuration(response, duration);
-  } 
-})
+    test(`Request by NAME: ${testPokemon.name} should responde in less than 10 seconds`, async ({request}) =>{    
+        const {response, duration } = await requestWithDuration(request, `${testPokemon.name}`);
+        expectPokemonResponseDuration(response, duration);
+    })
+  }
+});

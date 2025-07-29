@@ -4,7 +4,7 @@ import {PokemonPage} from '@pages/PokemonPage';
 import { loadPokemonTestData } from '@data/pokemonTestDataLoader';
 import { pokemonTestData} from '@interfaces/pokemon';
 
-test.describe('Pokemon Tests', () => {
+test.describe('Pokemon UI Tests', () => {
   const testData: pokemonTestData[] = loadPokemonTestData();
   for(let testPokemon of testData){
     test(`Should display correct pokemon content for ${testPokemon.name} `, async ({ page }) => {

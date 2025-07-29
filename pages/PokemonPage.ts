@@ -1,6 +1,6 @@
 import {Page, expect, Locator, APIResponse} from '@playwright/test';
 import {capitalizedFirtLetter} from '@utils/strings';
-import {prepareFolderDirectory} from '@utils/folders';
+import {prepareFolderDirectory,generateNewFile} from '@utils/files';
 import path from 'path';
 import fs from 'fs';
 
@@ -54,16 +54,12 @@ export class PokemonPage{
         expect(fileSize).toBeLessThan(50000);
     }
 
-    async downloadImageAndGetPath():Promise<string>{
+    async downloadImageAndGetPath(outputFolder: string):Promise<string>{
         await expect(this.pokemonImg).toBeVisible();
-        const outputFolder = 'images';
         await prepareFolderDirectory(outputFolder);
         const {imgUrl, fileName} = await this.getImageElementData(this.pokemonImg);
         const buffer = await this.getImageBuffer(imgUrl);
-        const folderPath = path.resolve(process.cwd(), outputFolder);
-        const imgPath = path.join(folderPath, fileName);
-        fs.writeFileSync(imgPath, buffer);
-        return imgPath;
+        return await generateNewFile(fileName, outputFolder, buffer);
     }
 
     async getImageElementData(imgLocator: Locator): Promise<{imgUrl: string, fileName:string}>{

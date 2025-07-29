@@ -12,7 +12,7 @@ test.describe('Pokemon Tests', () => {
         await pokemonPage.navigate(testPokemon.name);
         await pokemonPage.assertPageTitle(testPokemon.name);
         await pokemonPage.logArtworkAuthor();
-        const pokemonImage = await pokemonPage.downloadImageAndGetPath();
+        const pokemonImage = await pokemonPage.downloadImageAndGetPath('images');
         await pokemonPage.assertFileExtention(pokemonImage);
         await pokemonPage.assertFileSize(pokemonImage);
     });

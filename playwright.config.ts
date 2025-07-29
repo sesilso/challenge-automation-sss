@@ -26,6 +26,10 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
+  reporter:[
+    ['html', {outputFolder: 'playwright-report', open: 'never'}],
+    ['json', {outputFile: 'report.json'}],
+  ],
   projects: [
     {
       name: 'UI - Chrome',

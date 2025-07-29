@@ -1,4 +1,4 @@
-import {convertExcelPageToJson} from '@utils/filereader';
+import {convertExcelPageToJson} from '@utils/files';
 import {pokemonTestData} from '@interfaces/pokemon';
 
 export function loadPokemonTestData(): pokemonTestData[]{

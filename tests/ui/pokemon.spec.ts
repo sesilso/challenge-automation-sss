@@ -8,6 +8,8 @@ test.describe('Pokemon UI Tests', () => {
   const testData: pokemonTestData[] = loadPokemonTestData();
   for(let testPokemon of testData){
     test(`Should display correct pokemon content for ${testPokemon.name} `, async ({ page }) => {
+        test.info().annotations.push({ type: 'tag', description: 'smoke' });
+        test.info().annotations.push({ type: 'tag', description: 'regression' });
         const pokemonPage = new PokemonPage(page); 
         await pokemonPage.navigate(testPokemon.name);
         await pokemonPage.assertPageTitle(testPokemon.name);

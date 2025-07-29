@@ -32,7 +32,7 @@ export default defineConfig({
   ],
   projects: [
     {
-      name: 'UI - Chrome',
+      name: 'UI - Wikipedia/Pokemon',
       testDir: './tests/ui', 
       use: {
         baseURL: process.env.BASE_URL,

@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:dev": "cross-env ENV=qa SECRET_KEY=1234 playwright test --project=\"UI - Chrome\"",
-    "test:qa": "cross-env ENV=qa SECRET_KEY=1234 playwright test",
-    "test:cert": "cross-env ENV=cert SECRET_KEY=9876 npx playwright test"
+    "test:qa": "cross-env ENV=qa SECRET_KEY={env_secret_key} playwright test",
+    "test:cert": "cross-env ENV=cert SECRET_KEY={env_secret_key} npx playwright test"
   },
   "keywords": [],
   "author": "",
